@@ -29,12 +29,12 @@ public class Book {
     @Column(nullable = false)
     private String title;
 
-    //@Setter
-   // @ManyToMany
-    //@JoinTable(name = "book_authors",
-    //joinColumns = @JoinColumn(name = "book_id"),
-    //inverseJoinColumns = @JoinColumn(name = "author_id"))
-    //private Set<Author> authors;
+    @Setter
+    @ManyToMany
+    @JoinTable(name = "book_authors",
+    joinColumns = @JoinColumn(name = "book_id"),
+    inverseJoinColumns = @JoinColumn(name = "author_id"))
+    private Set<Author> authors;
 
     @Setter
     @Column
