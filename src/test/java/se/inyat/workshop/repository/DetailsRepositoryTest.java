@@ -1,31 +1,58 @@
 package se.inyat.workshop.repository;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.transaction.annotation.Transactional;
 import se.inyat.workshop.data.entity.Details;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @DataJpaTest
 public class DetailsRepositoryTest {
 
     @Autowired
-    AppUserRepository appUserRepository;
+    private DetailsRepository detailsRepository;
 
-    @Autowired
-    DetailsRepository detailsRepository;
-
-    @Transactional
     @Test
-    public void testFindDetailsByEmail() {
-        Details userDetails = new Details("inyat.n@gmail.se", "inyat", LocalDate.now());
+    public void testSaveAndFindById() {
+        Details details = new Details("test@example.com", "John Doe", LocalDate.of(1990, 1, 1));
+        detailsRepository.save(details);
 
-        Details savedDetails = detailsRepository.save(userDetails);
-        Optional<Details> foundDetails = Optional.of(detailsRepository.findDetailsByEmail("inyat.n@gmail.se"));
-        Assertions.assertTrue(foundDetails.isPresent());
+        Optional<Details> foundDetails = detailsRepository.findById(details.getId());
+        assertThat(foundDetails).isPresent();
+        assertThat(foundDetails.get().getEmail()).isEqualTo("test@example.com");
+    }
+
+    @Test
+    public void testFindByEmail() {
+        Details details = new Details("test@example.com", "John Doe", LocalDate.of(1990, 1, 1));
+        detailsRepository.save(details);
+
+        Details foundDetails = detailsRepository.findDetailsByEmail("test@example.com");
+        assertThat(foundDetails).isNotNull();
+        assertThat(foundDetails.getName()).isEqualTo("John Doe");
+    }
+
+    @Test
+    public void testFindByNameContains() {
+        Details details = new Details("test@example.com", "John Doe", LocalDate.of(1990, 1, 1));
+        detailsRepository.save(details);
+
+        Details foundDetails = detailsRepository.findDetailsByNameContains("John");
+        assertThat(foundDetails).isNotNull();
+        assertThat(foundDetails.getEmail()).isEqualTo("test@example.com");
+    }
+
+    @Test
+    public void testFindByNameIgnoreCase() {
+        Details details = new Details("test@example.com", "john doe", LocalDate.of(1990, 1, 1));
+        detailsRepository.save(details);
+
+        Details foundDetails = detailsRepository.findDetailsByNameIgnoreCase("JOHN DOE");
+        assertThat(foundDetails).isNotNull();
+        assertThat(foundDetails.getEmail()).isEqualTo("test@example.com");
     }
 }
