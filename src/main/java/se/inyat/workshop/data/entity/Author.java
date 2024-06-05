@@ -32,4 +32,12 @@ public class Author {
     joinColumns = @JoinColumn(name = "author_id"),
     inverseJoinColumns = @JoinColumn(name = "book_id"))
     private Set<Book> writtenBooks;
+
+    public Author(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+    public Author createAuthor(String firstName, String lastName) {
+        return new Author(firstName,lastName);
+    }
 }

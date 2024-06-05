@@ -49,4 +49,9 @@ public class Book {
         this.title = title;
         this.maxLoanDays = maxLoanDays;
     }
+    public Book addBook(String isbn, String title, int maxLoanDays, Author author) {
+        Book newBook = new Book(isbn, title, maxLoanDays);
+        newBook.authors.add(author);
+        return newBook;
+    }
 }

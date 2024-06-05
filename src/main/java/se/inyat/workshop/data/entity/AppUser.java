@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -35,13 +36,20 @@ public class AppUser {
     @JoinColumn(name = "details_id")
     private Details userDetails;
 
+    @OneToMany(mappedBy = "borrower")
+    private List<BookLoan> bookLoans;
+
     public AppUser(String username, String password) {
         this.username = username;
         this.password = password;
         this.regDate = LocalDate.now();
     }
 
+    protected void addBookLoan(BookLoan loan) {
+        bookLoans.add(loan);
+        loan.setBorrower(this);
+    }
 
-    //constructors and methods as needed
+    //more constructors and methods as needed
 
 }
